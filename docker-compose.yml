@@ -1,0 +1,17 @@
+services:
+  release-console:
+    build: .
+    image: spectrum-release-console:latest
+    ports:
+      - "8000:8000"
+    environment:
+      RELEASE_DB: /data/release.db
+    volumes:
+      - release-data:/data
+    restart: unless-stopped
+    # SQLite + a single background worker: exactly one process.
+    deploy:
+      replicas: 1
+
+volumes:
+  release-data:

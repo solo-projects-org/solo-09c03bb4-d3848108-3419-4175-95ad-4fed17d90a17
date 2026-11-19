@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}现行放行表 · 谱图匹配放行台{% endblock %}
+{% block content %}
+{% if not release %}
+<section class="card">
+  <h2>当前没有放行的结果</h2>
+  <p>请上传两份现行来源并完成整份重算；如存在问题，工作台会列出并暂停放行。</p>
+  <a class="button" href="/">返回工作台</a>
+</section>
+{% else %}
+<section class="card">
+  <div class="card-head">
+    <h2>现行放行表 #{{ release.id }}</h2>
+    <a class="button primary" href="/release.csv">下载靶标 CSV</a>
+  </div>
+  <div class="release-summary">
+    <div><span class="muted">阈值</span> {{ release.threshold }}</div>
+    <div><span class="muted">放行靶标</span> {{ total }}</div>
+    <div><span class="muted">最高分谱图</span> {{ summary.top_hit_count }}</div>
+    <div><span class="muted">靶标/诱饵</span> {{ summary.target_top_count }} / {{ summary.decoy_top_count }}</div>
+    <div><span class="muted">分数组</span> {{ summary.score_group_count }}</div>
+    <div><span class="muted">发布</span> {{ release.created_at }}</div>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>#</th><th>样本号</th><th>谱图号</th><th>肽段</th><th>分数</th><th>q 值</th></tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row.rank }}</td>
+        <td>{{ row.sample }}</td>
+        <td>{{ row.spectrum }}</td>
+        <td>{{ row.peptide }}</td>
+        <td>{{ row.score }}</td>
+        <td>{{ q_display(row.q_value) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="pager">
+    {% if offset > 0 %}
+      <a class="button" href="/release?limit={{ limit }}&offset={{ [offset - limit, 0]|max }}">上一页</a>
+    {% endif %}
+    <span class="muted">第 {{ offset + 1 }}–{{ [offset + rows|length, total]|min }} 条，共 {{ total }} 条</span>
+    {% if offset + rows|length < total %}
+      <a class="button" href="/release?limit={{ limit }}&offset={{ offset + limit }}">下一页</a>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

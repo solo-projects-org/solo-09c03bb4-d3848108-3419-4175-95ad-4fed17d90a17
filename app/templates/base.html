@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}谱图匹配放行台{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">▦</span>
+      <div>
+        <h1>谱图匹配放行台</h1>
+        <p>蛋白鉴定 · 目标-诱饵 FDR 放行</p>
+      </div>
+    </div>
+    <nav>
+      <a href="/">工作台</a>
+      <a href="/release">现行放行表</a>
+      <a href="/api/status">状态 JSON</a>
+      <a href="/docs">API 文档</a>
+    </nav>
+  </header>
+  <main>
+    {% if msg %}
+      <div class="flash {{ level or 'info' }}">{{ msg }}</div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+    <span>整份结果发布：仅当两份现行来源与阈值均未被新上传取代时生效。</span>
+  </footer>
+</body>
+</html>
